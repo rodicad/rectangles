@@ -9,7 +9,6 @@ import java.util.Map;
 */
 public class RectangleComponent extends JComponent
 {
-    private int indexKey;
     private Map<Integer,Rectangle> rectangles;
 
     public RectangleComponent(Map<Integer,Rectangle> rectangles){
