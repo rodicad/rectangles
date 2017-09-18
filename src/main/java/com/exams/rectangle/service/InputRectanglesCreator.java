@@ -1,4 +1,4 @@
-package com.exams.rectangle.model;
+package com.exams.rectangle.service;
 
 import com.exams.rectangle.RectanglesApp;
 import com.exams.rectangle.config.Constants;
@@ -15,7 +15,6 @@ import java.util.Map;
 public class InputRectanglesCreator {
 
     private static final Logger LOG = LoggerFactory.getLogger( RectanglesApp.class );
-    private Point startPoint;
 
     /**
      * This method will generate n adjacent rectangles within min and max point and dimensions limits
@@ -25,7 +24,7 @@ public class InputRectanglesCreator {
      */
     public  Map<Integer, Rectangle> generateSourceRectangles(int number_rectangles ) {
         Map<Integer, Rectangle> sourceRectangles = new LinkedHashMap<>(  );
-        this.startPoint = Constants.STARTPOINT;
+        final Point startPoint = new Point(Constants.MIN_X_POINT, Constants.MIN_Y_POINT);
 
         for (int i = 0; i < number_rectangles; i++) {
            int x = startPoint.x;

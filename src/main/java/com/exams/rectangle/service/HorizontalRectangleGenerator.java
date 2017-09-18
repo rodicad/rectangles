@@ -1,12 +1,10 @@
-package com.exams.rectangle.model;
+package com.exams.rectangle.service;
 
 import com.exams.rectangle.RectanglesApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.css.Rect;
 
 import java.awt.*;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,10 +34,10 @@ public class HorizontalRectangleGenerator {
 
         //because map cannot be modified inside a loop, I am iterating through the initial input rectangles map
         Iterator<Integer> it = inputRectangles.keySet().iterator();
+        int outputKey = 0;
 
         while (it.hasNext()) {
             int currentKey = it.next();
-            int outputKey = 0;
 
             while (interm.containsKey(currentKey)) {
                 Rectangle current = interm.get(currentKey);

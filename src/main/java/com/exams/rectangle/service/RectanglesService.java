@@ -3,15 +3,14 @@ package com.exams.rectangle.service;
 import com.exams.rectangle.RectanglesApp;
 import com.exams.rectangle.config.Constants;
 import com.exams.rectangle.json.RectanglesJSONFormatter;
-import com.exams.rectangle.model.HorizontalRectangleGenerator;
-import com.exams.rectangle.model.InputRectanglesCreator;
-import com.exams.rectangle.utils.ParamValidator;
-import com.exams.rectangle.utils.RectanglesUtilities;
+import com.exams.rectangle.model.JsonReport;
+import com.exams.rectangle.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +19,6 @@ import java.util.Map;
 public class RectanglesService {
     private static final Logger LOG = LoggerFactory.getLogger( RectanglesApp.class );
 
-    private  final int numberOfRectangles;
     private final InputRectanglesCreator inputRectanglesCreator;
     private final HorizontalRectangleGenerator outputRectanglesGenerator;
     private Map<Integer, Rectangle> sourceRectangles;
@@ -30,21 +28,23 @@ public class RectanglesService {
 
 
     public RectanglesService() {
-        numberOfRectangles = ParamValidator.getNumberOfRectangles();
         this.inputRectanglesCreator = new InputRectanglesCreator();
         outputRectanglesGenerator = new HorizontalRectangleGenerator();
         this.rectanglesJSONFormatter = new RectanglesJSONFormatter();
     }
 
-    public void runApplication() {
+    public void runApplication(int numberOfRectangles) {
         try {
-            //RectanglesDrawer draw = new RectanglesDrawer();
             sourceRectangles = inputRectanglesCreator.generateSourceRectangles( numberOfRectangles );
-          //  draw.drawRectangles(sourceRectangles);
+            List<Rectangle> sourceRectanglesList = rectanglesJSONFormatter.convertMapToList( sourceRectangles );
+
             outputRectangles = outputRectanglesGenerator.generateOutputRectangles (sourceRectangles);
-            String json = rectanglesJSONFormatter.convertToJSON(numberOfRectangles,sourceRectangles,outputRectangles);
-            RectanglesUtilities.writeToFile(json);
-           // draw.drawRectangles(outputRectangles);
+            List<Rectangle> outputRectanglesList = rectanglesJSONFormatter.convertMapToList( outputRectangles );
+
+            JsonReport jsonReport = new JsonReport( numberOfRectangles, sourceRectanglesList,outputRectanglesList  );
+
+            String json = rectanglesJSONFormatter.convertToJSON(jsonReport);
+            FileUtils.writeToFile(json, Constants.JSON_FILE_NAME );
         }
         catch (IOException e) {
             e.printStackTrace();
