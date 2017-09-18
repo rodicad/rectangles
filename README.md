@@ -32,7 +32,11 @@ Instructions to run:
  Main class:
  RectanglesApp.java 
  
- JSON OUtput file:
- output\rectangles.json
+ JSON Output file Location: output\rectangles.json
+ File rectangles.json will be created (if it doesn't exist) or overrided with every execution.
+ Folder output must exist by default.
+ output\rectangles.son ==> 
+ 
+ 
  
  
