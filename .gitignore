@@ -1,9 +1,6 @@
 
 # Created by https://www.gitignore.io/api/eclipse,intellij+iml,java,macos,maven
 
-output/
-outputTests/
-
 ### Eclipse ###
 
 .metadata
