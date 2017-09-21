@@ -15,7 +15,6 @@ import java.util.Map;
 public class HorizontalRectangleGenerator {
     private static final Logger LOG = LoggerFactory.getLogger( RectanglesApp.class );
 
-
     /**
      * Given n adjacent  input rectangles (considered vertical) which form a skyline shape, this function generates the "horizontal" rectangles
      * required to form the same skyline shape.
@@ -25,35 +24,35 @@ public class HorizontalRectangleGenerator {
      * @param inputRectangles which form a skyline shape
      * @return Returns a Map object containing the horizontal rectangles that form same skyline shape as inputRectangles
      */
-    public Map<Integer, Rectangle> generateOutputRectangles(Map<Integer, Rectangle> inputRectangles) {
-       //the horizontal rectangles Map to rerieve
+    public Map<Integer, Rectangle> generateOutputRectangles( Map<Integer, Rectangle> inputRectangles ) {
+        //the horizontal rectangles Map to rerieve
         Map<Integer, Rectangle> outputRectangles = new LinkedHashMap<>();
 
         //the intermediary rectangles will adjust their height and start point based on generated horizontal rectangles
-        Map<Integer, Rectangle> interm = new LinkedHashMap<>(inputRectangles);
+        Map<Integer, Rectangle> interm = new LinkedHashMap<>( inputRectangles );
 
         //because map cannot be modified inside a loop, I am iterating through the initial input rectangles map
         Iterator<Integer> it = inputRectangles.keySet().iterator();
         int outputKey = 0;
 
-        while (it.hasNext()) {
+        while ( it.hasNext() ) {
             int currentKey = it.next();
 
-            while (interm.containsKey(currentKey)) {
-                Rectangle current = interm.get(currentKey);
-                int minHeight = getMinHeight(interm);
+            while ( interm.containsKey( currentKey ) ) {
+                Rectangle current = interm.get( currentKey );
+                int minHeight = getMinHeight( interm );
 
-                if (current.height >= minHeight) {
+                if ( current.height >= minHeight ) {
                     Rectangle newHorizontal = new Rectangle();
                     newHorizontal.x = current.x;
                     newHorizontal.y = current.y;
                     newHorizontal.height = minHeight;
-                    newHorizontal.width = calculateWidth(minHeight, currentKey, interm);
-                    outputRectangles.put(outputKey, newHorizontal);
-                    LOG.info("Horizontal rectangle generated: key: {},x: {},y: {},width: {},height: {}"
-                            ,outputKey,newHorizontal.x,newHorizontal.y,newHorizontal.width,newHorizontal.height);
+                    newHorizontal.width = calculateWidth( minHeight, currentKey, interm );
+                    outputRectangles.put( outputKey, newHorizontal );
+                    LOG.info( "Horizontal rectangle generated:x: {},y: {},width: {},height: {}"
+                            , newHorizontal.x, newHorizontal.y, newHorizontal.width, newHorizontal.height );
                     outputKey += 1;
-                    interm = updateRectangles(minHeight, currentKey, interm);
+                    interm = updateRectangles( minHeight, currentKey, interm );
                 } else {
                     it.remove();
 
@@ -72,20 +71,20 @@ public class HorizontalRectangleGenerator {
      * @param interm
      * @return
      */
-    private Map<Integer, Rectangle> updateRectangles(int minHeight, int previousKey, Map<Integer, Rectangle> interm) {
+    private Map<Integer, Rectangle> updateRectangles( int minHeight, int previousKey, Map<Integer, Rectangle> interm ) {
         //because I a map cannot be changed inside a loop, I am using a new one to update
-        Map<Integer, Rectangle> temp = new LinkedHashMap<>(interm);
-        for (Rectangle r : interm.values()) {
-            if (r.height == minHeight) {
-                temp.values().remove(r);
-                previousKey = getKey(r, interm);
-            } else if (r.height > minHeight) {
-                r.y = r.y + minHeight;
+        Map<Integer, Rectangle> temp = new LinkedHashMap<>( interm );
+        for ( Rectangle r : interm.values() ) {
+            if ( r.height == minHeight ) {
+                temp.values().remove( r );
+                previousKey = getKey( r, interm );
+            } else if ( r.height > minHeight && ( ( getKey( r, interm ) - previousKey <= 1 ) ) ) {
+                r.y = r.y - minHeight;
                 r.height = r.height - minHeight;
-                temp.put(getKey(r, interm), r);
+                temp.put( getKey( r, interm ), r );
 
-                if ((getKey(r, interm) - previousKey == 1)) {
-                    previousKey = getKey(r, interm);
+                if ( ( getKey( r, interm ) - previousKey == 1 ) ) {
+                    previousKey = getKey( r, interm );
                 }
             } else {
                 break;
@@ -94,22 +93,22 @@ public class HorizontalRectangleGenerator {
         return temp;
     }
 
-    private Integer getKey(Rectangle r, Map<Integer, Rectangle> list) {
-        for (Integer key : list.keySet()) {
-            if (r.equals(list.get(key))) {
+    private Integer getKey( Rectangle r, Map<Integer, Rectangle> list ) {
+        for ( Integer key : list.keySet() ) {
+            if ( r.equals( list.get( key ) ) ) {
                 return key;
             }
         }
         return null;
     }
 
-    private int calculateWidth(int minHeight, int previousKey, Map<Integer, Rectangle> list) {
+    private int calculateWidth( int minHeight, int previousKey, Map<Integer, Rectangle> list ) {
         int width = 0;
-        for (Rectangle r : list.values()) {
-            if (r.height >= minHeight) {
-                if ((getKey(r, list) - previousKey <= 1)) {
+        for ( Rectangle r : list.values() ) {
+            if ( r.height >= minHeight ) {
+                if ( ( getKey( r, list ) - previousKey <= 1 ) ) {
                     width += r.width;
-                    previousKey = getKey(r, list);
+                    previousKey = getKey( r, list );
                 } else {
                     break;
                 }
@@ -118,15 +117,20 @@ public class HorizontalRectangleGenerator {
         return width;
     }
 
-    private int getMinHeight(Map<Integer, Rectangle> list) {
+    private int getMinHeight( Map<Integer, Rectangle> list ) {
         int min = list.values().iterator().next().height;
+        int prevKey = getKey( list.values().iterator().next(), list );
 
-        for (Rectangle r : list.values()) {
-            if (r.height < min) {
-                min = r.height;
+        for ( Rectangle r : list.values() ) {
+            if ( getKey( r, list ) - prevKey <= 1 ) {
+                if ( r.height < min ) {
+                    min = r.height;
+                }
+                prevKey = getKey( r, list );
+            }else {
+                        break;
+                  }
             }
+            return min;
         }
-        return min;
     }
-
-}

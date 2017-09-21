@@ -24,7 +24,7 @@ public class InputRectanglesCreator {
      */
     public  Map<Integer, Rectangle> generateSourceRectangles(int number_rectangles ) {
         Map<Integer, Rectangle> sourceRectangles = new LinkedHashMap<>(  );
-        final Point startPoint = new Point(Constants.MIN_X_POINT, Constants.MIN_Y_POINT);
+        final Point startPoint = new Point(Constants.MIN_X_POINT, Constants.MAX_Y_POINT);
 
         for (int i = 0; i < number_rectangles; i++) {
            int x = startPoint.x;
